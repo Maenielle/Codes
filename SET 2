@@ -1,0 +1,191 @@
+def shift_letter(letter, shift):
+    '''Shift Letter.
+
+    Shift a letter right by the given number.
+    Wrap the letter around if it reaches the end of the alphabet.
+
+    Parameters
+    ----------
+    letter: str
+        a single uppercase English letter, or a space.
+    shift: int
+        the number by which to shift the letter.
+
+    Returns
+    -------
+    str
+        The shifted letter, or a space if the original letter was a space.
+    '''
+    if letter == ' ':
+        return ' ' 
+    
+    letter_position = ord(letter) - ord('A')
+    
+    new_position = (letter_position + shift) % 26
+    
+    new_letter = chr(ord('A') + new_position)
+    
+    return new_letter
+
+def caesar_cipher(message, shift):
+    '''Caesar Cipher.
+
+    Apply a shift number to a string of uppercase English letters and spaces.
+
+    Parameters
+    ----------
+    message: str
+        a string of uppercase English letters and spaces.
+    shift: int
+        the number by which to shift the letters.
+
+    Returns
+    -------
+    str
+        The shifted message.
+    '''
+    shifted_message = [] 
+    
+    for char in message:
+        if char == ' ':
+            shifted_message.append(' ') 
+        else:
+            new_position = (ord(char) - ord('A') + shift) % 26
+            new_char = chr(ord('A') + new_position)
+            shifted_message.append(new_char)
+    
+    return ''.join(shifted_message)
+
+def shift_by_letter(letter, letter_shift):
+    '''Shift By Letter.
+
+    Shift a letter to the right using the number equivalent of another letter.
+    The shift letter is any letter from A to Z, where A represents 0, B represents 1,
+        ..., Z represents 25.
+
+    Examples:
+    shift_by_letter("A", "A") -> "A"
+    shift_by_letter("A", "C") -> "C"
+    shift_by_letter("B", "K") -> "L"
+    shift_by_letter(" ", _) -> " "
+
+    Parameters
+    ----------
+    letter: str
+        a single uppercase English letter, or a space.
+    letter_shift: str
+        a single uppercase English letter.
+
+    Returns
+    -------
+    str
+    # If the input is a space, just return it as is.
+    '''
+    if letter == " ":
+        return " "
+
+    letter_pos = ord(letter) - ord('A')
+    shift_pos = ord(letter_shift) - ord('A')
+
+    shifted_pos = (letter_pos + shift_pos) % 26
+
+    shifted_letter = chr(shifted_pos + ord('A'))
+
+    return shifted_letter
+
+def vigenere_cipher(message, key):
+    '''Vigenere Cipher.
+
+    Encrypts a message using a keyphrase instead of a static number.
+    Every letter in the message is shifted by the number represented by the
+        respective letter in the key.
+    Spaces should be ignored.
+
+    Parameters
+    ----------
+    message: str
+         The message you want to encrypt. It contains uppercase letters and spaces.
+    key: str
+        The key (a string of uppercase letters) used to encrypt the message. It may be shorter than the message.
+
+    Returns
+    -------
+    str
+        The encrypted message.
+    '''
+    encrypted_message = []
+
+    key_index = 0
+
+    for char in message:
+        if char == ' ': 
+            encrypted_message.append(' ')
+        else:
+            shift_value = ord(key[key_index % len(key)]) - ord('A') 
+
+            new_char = chr((ord(char) - ord('A') + shift_value) % 26 + ord('A')) 
+
+            encrypted_message.append(new_char)
+
+            key_index += 1
+
+    return ''.join(encrypted_message)
+
+def scytale_cipher(message, shift):
+    '''Scytale Cipher.
+
+    Encrypts a message by simulating a scytale cipher.
+
+    Parameters
+    ----------
+    message: str
+        a string of uppercase English letters and underscores (underscores represent spaces)
+    shift: int
+        a positive int that does not exceed the length of message
+
+    Returns
+    -------
+    str
+        the encoded message
+    '''
+    while len(message) % shift != 0:
+        message += '_'
+
+    rows = len(message) // shift
+
+    encoded_message = []
+
+    for col in range(shift):
+        for row in range(rows):
+            encoded_message.append(message[row * shift + col])
+
+    return ''.join(encoded_message)
+
+def scytale_decipher(message, shift):
+    '''Scytale De-cipher.
+
+    Decrypts a message that was originally encrypted with the `scytale_cipher` function above.
+
+    Parameters
+    ----------
+    message: str
+        a string of uppercase English letters and underscores (underscores represent spaces)
+    shift: int
+        a positive int that does not exceed the length of message
+
+    Returns
+    -------
+    str
+        the decoded message
+    '''
+    num_rows = len(message) // shift
+    
+    matrix = [''] * num_rows
+    
+    for i in range(len(message)):
+        row = i % num_rows  
+        matrix[row] += message[i]  
+    
+    decrypted_message = ''.join(matrix)
+    
+    return decrypted_message
